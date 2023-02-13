@@ -4,7 +4,7 @@ name = "AstraAuctions"
 group =  "com.astrainteractive"
 description = "Market plugin for EmpireSMP"
 wear-gms = "18.0.0"
-destinationDirectoryPath = "D:\\Minecraft Servers\\EmpireProjekt_remake\\smp\\plugins"
+destinationDirectoryPath = "C:\\Proyectos\\kotlin\\AstraAuctions\\build"
 # Kotlin
 kotlin = "1.7.0"
 jetbrainsCompose = "1.2.0"

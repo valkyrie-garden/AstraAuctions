@@ -1,9 +1,12 @@
 package com.astrainteractive.astramarket.api.use_cases
 
 import com.astrainteractive.astramarket.domain.dto.AuctionDTO
+import com.astrainteractive.astramarket.events.CreateAuctionEvent
+import com.astrainteractive.astramarket.events.ExpireAuctionEvent
 import com.astrainteractive.astramarket.modules.Modules
 import com.astrainteractive.astramarket.plugin.PluginPermission
 import com.astrainteractive.astramarket.utils.*
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import ru.astrainteractive.astralibs.di.getValue
 import ru.astrainteractive.astralibs.domain.UseCase
@@ -38,6 +41,7 @@ class ExpireAuctionUseCase : UseCase<Boolean, ExpireAuctionUseCase.Params> {
             player?.sendMessage(translation.unexpectedError)
         } else
             player?.sendMessage(translation.auctionHasBeenExpired)
+            Bukkit.getPluginManager().callEvent(ExpireAuctionEvent(auction))
         return (result != null)
     }
 }

@@ -1,6 +1,7 @@
 package com.astrainteractive.astramarket.api.use_cases
 
 import com.astrainteractive.astramarket.domain.dto.AuctionDTO
+import com.astrainteractive.astramarket.events.AuctionBuyEvent
 import com.astrainteractive.astramarket.modules.Modules
 import com.astrainteractive.astramarket.utils.displayNameOrMaterialName
 import com.astrainteractive.astramarket.utils.itemStack
@@ -22,10 +23,12 @@ class AuctionBuyUseCase : UseCase<Boolean, AuctionBuyUseCase.Params> {
     private val dataSource by Modules.auctionsApi
     private val translation by Modules.translation
     private val config by Modules.configuration
+
     class Params(
         val auction: AuctionDTO,
         val player: Player
     )
+
     override suspend fun run(params: Params): Boolean {
         val _auction = params.auction
         val player = params.player
@@ -71,6 +74,8 @@ class AuctionBuyUseCase : UseCase<Boolean, AuctionBuyUseCase.Params> {
                 translation.notifyOwnerUserBuy.replace("%player%", player.name)
                     .replace("%item%", item.displayNameOrMaterialName()).replace("%price%", auction.price.toString())
             )
+
+            Bukkit.getPluginManager().callEvent(AuctionBuyEvent(auction))
         } else {
             VaultEconomyProvider.addMoney(player, auction.price.toDouble())
             VaultEconomyProvider.takeMoney(owner, auction.price.toDouble())

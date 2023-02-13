@@ -1,6 +1,8 @@
 package com.astrainteractive.astramarket.api.use_cases
 
 import com.astrainteractive.astramarket.domain.dto.AuctionDTO
+import com.astrainteractive.astramarket.events.AuctionBuyEvent
+import com.astrainteractive.astramarket.events.CreateAuctionEvent
 import com.astrainteractive.astramarket.modules.Modules
 import com.astrainteractive.astramarket.utils.playSound
 import org.bukkit.Bukkit
@@ -66,19 +68,18 @@ class CreateAuctionUseCase : UseCase<Boolean, CreateAuctionUseCase.Params> {
         )
 
         val result = dataSource.insertAuction(auction)
-        if (result != null) {
+        return if (result != null) {
             item.amount -= amount
             player.sendMessage(translation.auctionAdded)
             player.playSound(config.sounds.success)
             if (config.auction.announce)
                 Bukkit.broadcastMessage(translation.broadcast.replace("%player%", player.name))
-            return true
+            Bukkit.getPluginManager().callEvent(CreateAuctionEvent(auction))
+            true
         } else {
             player.playSound(config.sounds.fail)
             player.sendMessage(translation.dbError)
-            return false
+            false
         }
-
-
     }
 }

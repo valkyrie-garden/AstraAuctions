@@ -1,6 +1,8 @@
 package com.astrainteractive.astramarket.api.use_cases
 
 import com.astrainteractive.astramarket.domain.dto.AuctionDTO
+import com.astrainteractive.astramarket.events.ExpireAuctionEvent
+import com.astrainteractive.astramarket.events.RemoveAuctionEvent
 import com.astrainteractive.astramarket.modules.Modules
 import com.astrainteractive.astramarket.utils.itemStack
 import com.astrainteractive.astramarket.utils.playSound
@@ -46,6 +48,7 @@ class RemoveAuctionUseCase : UseCase<Boolean, RemoveAuctionUseCase.Params> {
         return if (result != null) {
             player.sendMessage(translation.auctionDeleted)
             player.inventory.addItem(item)
+            Bukkit.getPluginManager().callEvent(RemoveAuctionEvent(auction))
             true
         } else {
             player.sendMessage(translation.unexpectedError)
